@@ -38,7 +38,7 @@ double Fahrrad::dGeschwindigkeit() const{
 	// Für jede 20 km Strecke wird die Geschwindigkeit um 10% reduziert
 	// dFactor = 0.9^dReduktion
 	//Funktion pow aus cmath Bibliothek hilft hier
-	double dFactor = pow(0.9, dReduktion);
+	double dFactor = pow(0.9, dReduktion);//0.9*0.9=0*81
 
 	// Berechnung der aktuellen Geschwindigkeit
 	// Maximale Geschwindigkeit wird mit dem Reduktionsfaktor multipliziert

@@ -1,9 +1,8 @@
-#include <iostream>
-#include <memory>
-#include <vector>
-#include <iomanip>
-#include <algorithm>
-#include <cmath>
+#include <iostream> // Für Ein- und Ausgabe, z.B. std::cout und std::cin
+#include <memory>  // Für Smart Pointer wie std::unique_ptr und std::shared_ptr
+#include <vector>  // Für die Verwendung von std::vector (dynamische Arrays)
+#include <iomanip> // Für Formatierung von Ausgaben, z.B. std::setprecision, std::setw
+#include <cmath> //Für mathematische Funktionen, z.B. std::fabs, std::pow
 
 #include "Fahrzeug.h"
 #include "PKW.h"
@@ -12,6 +11,28 @@
 //Simulation von Fahrzeugen erfordert, dass alle Fahrzeuge denselben Zeitverlauf kennen.
 double dGlobaleZeit = 0.0;
 
+//Kleine Konstante für Gleitkomma-Vergleiche
+const double epsilon = 1e-6;
+
+//Funktionsdeklarationen
+void vAufgabe_1();
+void vAufgabe_1a();
+void vAufgabe_2();
+void vAufgabe_3();
+double eingabeKontrolle();
+
+int main() {
+
+	vAufgabe_1();
+	//vAufgabe_1a();
+//	vAufgabe_2();
+	//vAufgabe_3();
+
+
+	return 0;
+}
+
+
 //Überprüfung der Benutzereingabe für positive double Werte
 double eingabeKontrolle(){
 						double wert;
@@ -19,7 +40,7 @@ double eingabeKontrolle(){
 
 							std::cin >> wert;
 
-							if(std::cin.fail() || wert <= 0){
+							if(std::cin.fail()){
 								std::cin.clear();
 								std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
 								std::cout << "Ungültige Eingabe, bitte geben Sie eine positive Zahl ein"<< std::endl;
@@ -28,6 +49,7 @@ double eingabeKontrolle(){
 							}
 						}
 					}
+
 
 
 void vAufgabe_1(){
@@ -60,10 +82,10 @@ void vAufgabe_1(){
 	auto sptr3_kopieren = sPtr1; //use_count = 3
 
 	std::cout << "sPtr1 Referanzanzahl (nach dem Kopieren): " << sPtr1.use_count() << std::endl;
-	std::cout << "sPtr2 Referanzanzahl: " << sPtr2_kopieren.use_count() << std::endl;
+	std::cout << "sPtr2_kopieren Referanzanzahl: " << sPtr2_kopieren.use_count() << std::endl;
 
 	// Unique Pointer Kopiervorgang (ERROR!)
-	// Wenn wir den Kommentar in der folgenden Zeile entfernen, wird der Code NICHT KOMPILIERT.
+	// Wenn wir den Kommentar in der folgenden Zeile entfernen, wird der Code nicht kompiliert.
     //auto uPtr_copy = uPtr1;
     // Weil unique_ptr kann nicht kopiert werden,wurde diese Zeile ein Error verursachen
 
@@ -102,23 +124,35 @@ void vAufgabe_1(){
 	// Erstellen einen Vector, der shared_ptr zu Fahrzeugen speichert.
 	std::vector<std::shared_ptr<Fahrzeug>> vecSharedPtr;
 
-	// Zuerst KOPIEREN wir sPtr1 in den Vektor.(Ohne move() nutzen)
+
+
 	  std::cout << "sPtr1 Referenzanzahl (vor dem Kopieren): "
 	              << sPtr1.use_count() << std::endl; // Ausgabe: 3
 
+
+
+
 	  //sPtr1 wird in den Vektor kopiert und der Referenzzähler wird erhöht.
 	  vecSharedPtr.push_back(sPtr1);
+
+
 
 	  std::cout << "sPtr1 Referenzanzahl (nach dem Kopieren): "
 	            << sPtr1.use_count() << std::endl; // Ausgabe: 4
     // Nun hat sPtr1 eine Referenzanzahl von 4 -----> sPtr1, sPtr2kopieren, sptr3_kopieren und der vecSharedPtr[0].
 
+
+
 	// Jetzt TRANSPORTIEREN wir sPtr_move in den Vektor (mit move()).
 	  std::cout << "sPtr_move Referenzanzahl (vor dem Transportieren): "
 	            << sPtr_move.use_count() << std::endl; // Ausgabe: 1
 
+
+
 	  //Transportieren mit move(), Referenzzähler wird NICHT erhöht.
 	  vecSharedPtr.push_back(std::move(sPtr_move));
+
+
 
 	  std::cout << "sPtr_move Referenzanzahl (nach dem Transportieren): "
 	            << sPtr_move.use_count() << std::endl; // Ausgabe: 0
@@ -126,6 +160,8 @@ void vAufgabe_1(){
 	          std::cout << "sPtr_move = nullptr (Besitz ist verschoben in den Vektor)" << std::endl;
 	      }
 	  //sPtr_move ist jetzt null, da der Besitz des Objekts durch den Vektor übernommen wurde.
+
+
 
 	  std::cout << "Referenzanzahlen vor dem Ende von vAufgabe_1():" << std::endl;
 	  std::cout << "sPtr1 Referenzanzahl : " << sPtr1.use_count() << std::endl;
@@ -145,14 +181,14 @@ void vAufgabe_1(){
 
 
 }
-
+// vAufgabe_1a: Grundlegende Simulationsstruktur.
 void vAufgabe_1a(){
 	std::cout<<"-----vAufgabe_1a() gestartet-----"<<std::endl;
 
 	std::vector<std::unique_ptr<Fahrzeug>> vektor_Fzg;
 
 	double dSimulationsEnde = 5.0;
-	double dZeitakt = 0.25;
+	double dZeitakt = 1.0;
 
 
 	//Erstellen von 3 Fahrzeugen mit Benutzereingabe
@@ -175,6 +211,7 @@ void vAufgabe_1a(){
 
 	}
 
+	//Hauptsimulationsschleife
 	while(dGlobaleZeit<dSimulationsEnde){
 		//Die Schleife läuft, bis die gesamte Simulationszeit erreicht ist.
 
@@ -183,7 +220,9 @@ void vAufgabe_1a(){
 		dGlobaleZeit += dZeitakt;
 
 
-		std::cout<<"\nAktuelle Globale Zeit: "<<dGlobaleZeit<<std::endl;
+		std::cout<<"\nAktuelle Globale Zeit: "<<
+				std::fixed<<std::setprecision(2)<<
+				dGlobaleZeit<<std::endl;
 
 
 		//Ausgabe der Kopfzeile für die Fahrzeugdaten.(ID, Name, Geschwindigkeit, Gesamtstrecke, etc.)
@@ -191,13 +230,13 @@ void vAufgabe_1a(){
 
 		std::cout<<std::endl;
 
-		for(auto& w : vektor_Fzg){
+		for(auto& pFzg : vektor_Fzg){
 			//Durchläuft alle Fahrzeuge im Vektor.
 
 			//Simuliert die Bewegung des Fahrzeugs für das aktuelle Zeitintervall.
-			w->vSimulieren();//(*pfzg).vSimulieren(); = pFzg->vSimulieren(); Fahrzeugzustand aktualisieren
+			pFzg->vSimulieren();//(*pfzg).vSimulieren(); = pFzg->vSimulieren(); Fahrzeugzustand aktualisieren
 
-			std::cout << *w; //Fahrzeuginformationen ausgeben
+			std::cout << *pFzg; //Fahrzeuginformationen ausgeben dank der Überladung des Ausgabeoperators
 
 			std::cout<<std::endl;
 		}
@@ -207,6 +246,7 @@ void vAufgabe_1a(){
 
 }
 
+// vAufgabe_2: Testet Vererbung & Polymorphie.
 void vAufgabe_2(){
 
 	std::cout<<"-----vAufgabe_2() gestartet-----"<<std::endl;
@@ -217,7 +257,7 @@ void vAufgabe_2(){
 	//Benutzereingabe für Anzahl der PKWs und Fahrräder
 	int iAnzahlPKW, iAnzahlFahrrad; //Anzahl der PKWs und Fahrräder
 	double dSimulationsEnde = 5.0; //Gesamtsimulationszeit in Stunden
-	double dZeitakt = 0.25; //Zeitintervall für jeden Simulationsschritt in Stunden
+	double dZeitakt = 1.0; //Zeitintervall für jeden Simulationsschritt in Stunden
 
 	//Eingabe der Anzahl der PKWs und Fahrräder
 	//Mit Eingabekontrolle werden nur positive Werte akzeptiert
@@ -279,16 +319,19 @@ void vAufgabe_2(){
 		dGlobaleZeit += dZeitakt;
 
 		//PKW tanken nach 3 Stunden (nur einmal)
-		if(dGlobaleZeit >=3.0 && !bGetankt){
+		if(fabs(dGlobaleZeit - 3.0)<epsilon && !bGetankt){
+			//globaleZeit >= 3.0 und bGetankt ist false
 			bGetankt = true;//Setzt das Flag, um weiteren Tankvorgang zu verhindern
 			std::cout<<"--- Tankvorgang bei 3 Stunden ---"<<std::endl;
-			for(auto& w : vektor_Fzg){
-				w->dTanken(); //Nur PKWs werden tanken, Fahrräder ignorieren diese Methode
+			for(auto& pFzg : vektor_Fzg){
+				pFzg->dTanken(); //Nur PKWs werden tanken, Fahrräder ignorieren diese Methode
 			}
 		}
 
 
-		std::cout<<"\nAktuelle Globale Zeit: "<<dGlobaleZeit<<std::endl;
+		std::cout<<"\nAktuelle Globale Zeit: "<<
+				std::fixed<<std::setprecision(2)<<
+				dGlobaleZeit<<std::endl;
 
 		//Ausgabe der Kopfzeile für die Fahrzeugdaten.(ID, Name, Geschwindigkeit, Gesamtstrecke, etc.)
 		Fahrzeug::vKopf();
@@ -296,11 +339,11 @@ void vAufgabe_2(){
 		std::cout<<std::endl;
 
 		//Simulieren und Ausgabe jedes Fahrzeugs im Vektor mit Rangen-basiertem for-loop
-		for(auto& w : vektor_Fzg){
+		for(auto& pFzg : vektor_Fzg){
 
-			w->vSimulieren();//(*pfzg).vSimulieren(); = pFzg->vSimulieren(); Fahrzeugzustand aktualisieren
+			pFzg->vSimulieren();//(*pfzg).vSimulieren(); = pFzg->vSimulieren(); Fahrzeugzustand aktualisieren
 
-			std::cout << *w; //Fahrzeuginformationen ausgeben
+			std::cout << *pFzg; //Fahrzeuginformationen ausgeben
 
 			std::cout<<std::endl;
 		}
@@ -308,7 +351,6 @@ void vAufgabe_2(){
 	}
 }
 
-//Burada kaldık*********************************************************
 void vAufgabe_3(){
 	std::cout<<"-----vAufgabe_3() gestartet-----"<<std::endl;
 
@@ -318,7 +360,7 @@ void vAufgabe_3(){
 	//Fügen wir ein Fahrrad und ein PKW zum Vektor mit festen Werten hinzu
 	vektor_Fzg.push_back(std::make_unique<Fahrrad>("Fahrrad-1", 25.0));
 
-	vektor_Fzg.push_back(std::make_unique<PKW>("PKW-1", 150.0, 6.5, 50.0));
+	vektor_Fzg.push_back(std::make_unique<PKW>("PKW-1", 150.0, 6.5, 60.0));
 
 	//Simulationsprozess für 3 Stunden mit Zeitintervall von 1.5 Stunden
 	    double dSimulationsEnde = 3.0;
@@ -328,10 +370,14 @@ void vAufgabe_3(){
 	        dGlobaleZeit += dZeitakt;
 
 	        std::cout<<"-------------------------------------------------"<<std::endl;
-	        std::cout<<"\nAktuelle Globale Zeit: "<<dGlobaleZeit<<std::endl;
+	        std::cout<<"\nAktuelle Globale Zeit: "<<
+	        		std::fixed<<std::setprecision(2)<<
+					dGlobaleZeit<<std::endl;
 
 	        Fahrzeug::vKopf();
+
 	        std::cout << std::endl;
+
 	        for(auto& pFzg : vektor_Fzg) {
 	            pFzg->vSimulieren();
 	            std::cout << *pFzg << std::endl;
@@ -345,6 +391,7 @@ void vAufgabe_3(){
 
 	    std::cout << "Test 1: Ausgabeoperator Test" << std::endl;
 	    std::cout<<std::endl;
+
 	    Fahrzeug::vKopf();
 	    std::cout << std::endl;
 	    for(auto& pFzg : vektor_Fzg) {
@@ -383,13 +430,6 @@ void vAufgabe_3(){
 
 
 
-int main() {
-
-	//vAufgabe_1();
-	//vAufgabe_1a();
-	//vAufgabe_2();
-	vAufgabe_3();
 
 
-	return 0;
-}
+

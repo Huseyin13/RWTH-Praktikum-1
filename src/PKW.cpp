@@ -16,6 +16,7 @@ PKW::PKW(std::string name, double maxGeschwindigkeit, double verbrauch, double t
 
 }
 
+//Getankte Menge zurückgeben
 double PKW::dTanken(double dMenge) {
 	double d_freierPlatz = p_dTankVolumen - p_dTankInhalt; // Verfügbarer Platz im Tank
 
@@ -29,11 +30,15 @@ double PKW::dTanken(double dMenge) {
 
 		p_dTankInhalt = p_dTankVolumen;
 
+		// Nur der verfügbare Platz wurde getankt
+		//Deswegen geben wir den freien Platz zurück
 		return d_freierPlatz;
 
 	}else // Normales Tanken
 	{
 		p_dTankInhalt += dMenge;
+
+		// Die gesamte Menge wurde getankt
 		return dMenge;
 	}
 }
@@ -49,10 +54,9 @@ void PKW::vAusgeben(std::ostream& o) const{
 			  << std::setw(11) << p_dVerbrauch
 			  << std::setw(16) << p_dTankInhalt;
 
-
-
-
 }
+
+
 
 void PKW::vSimulieren(){
 
@@ -88,12 +92,6 @@ void PKW::vSimulieren(){
 
 }
 
-// Berechnen wir die aktuelle Geschwindigkeit des PKWs
-/*double PKW::dGeschwindigkeit() const{
-
-	// Geschwindigkeit ist immer die maximale Geschwindigkeit, solange Kraftstoff im Tank ist
-	return p_dMaxGeschwindigkeit;
-}*/
 
 
 

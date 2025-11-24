@@ -9,9 +9,10 @@ extern double dGlobaleZeit;
 
 
 
-/* DIESE Zeile reserviert den Speicher für die 'static' Variable,
+/* Diese Zeile reserviert den Speicher für die 'static' Variable,
 die in der .h-Datei nur "angekündigt" (deklariert) wurde.
 Es darf nur EINE Definition im gesamten Programm geben.*/
+//ODR-One Definition Rule : Eine statische Membervariable muss genau einmal definiert werden,
 int Fahrzeug::p_iMaxId = 0;
 //Wir haben Fahrzeug:: genutzt, damit compiler die Definiton von p_iMaxId finden kann.
 
@@ -20,6 +21,9 @@ int Fahrzeug::p_iMaxId = 0;
 /* Konstruktoren und Destruktoren der Fahrzeug-Klasse
  Initialisierungsliste wird verwendet, um die Member direkt zu initialisieren
  (keine unnötigen Zuweisungen)*/
+
+//Da der Konstruktor das Gerüst des Objekts ist
+//müssen unverzichtbare Eigenschaften wie die ID genau an dieser Stelle festgelegt werden.
 Fahrzeug::Fahrzeug():
 		p_iId(++p_iMaxId),
 		p_sName(""),
@@ -60,6 +64,7 @@ Fahrzeug::Fahrzeug(std::string name, double maxGeschwindigkeit):
 }
 
 //Destruktor
+//Der Destruktor wird aufgerufen, wenn ein Fahrzeugobjekt gelöscht wird
 Fahrzeug::~Fahrzeug() {
 
 	std::cout<<"Fahrzeug gelöscht -> ID : " << p_iId <<", Name : "<<p_sName<<std::endl;
@@ -73,6 +78,7 @@ Fahrzeug::~Fahrzeug() {
 void Fahrzeug::vKopf() {
 
 	//Kopfzeile für die Fahrzeugdaten ausgeben
+	// Textausgabe wird linkbündig ausgerichtet.
 	std::cout << std::left;
 	std::cout << std::setw(5) << "ID"; //Breit 5 für ID
 	std::cout << std::setw(15) << "Name"; //Breit 15 für Name
@@ -114,6 +120,8 @@ void Fahrzeug::vAusgeben(std::ostream& o) const {
 
 
 // Virtuelle Tankfunktion für alle Fahrzeuge.
+// In Fahrzeug datei tanken ist notwendig, damit wir 'dTanken' auch auf allgemeinen Fahrzeug-Zeigern (z.B. im Vektor)
+// aufrufen können, ohne zu wissen, ob es ein PKW oder Fahrrad ist.
 double Fahrzeug::dTanken(double dMenge){
 		return 0.0;
 	}
@@ -152,7 +160,7 @@ void Fahrzeug::vSimulieren(){
     	return p_dMaxGeschwindigkeit;
     }
 
-
+    //cout<< fahrzeug*;
     // Überladen des Ausgabeoperators für Fahrzeug
     std::ostream& operator<<(std::ostream& o, const Fahrzeug& fzg){
 		fzg.vAusgeben(o);
@@ -160,11 +168,13 @@ void Fahrzeug::vSimulieren(){
 	}
 
     // Überladen des Vergleichsoperators '<' für Fahrzeuge basierend auf der Gesamtstrecke
-    bool Fahrzeug::operator<(const Fahrzeug& anderesFahrzeug) const{
+    // Im Hintergrund funktionieren wie fahrad1.operator<(anderesFahrzeug);
+    bool Fahrzeug::operator<(const Fahrzeug& anderesFahrzeug) const{ //const, weil wir die Objekte nicht verändern wollen
     	return this->p_dGesamtStrecke < anderesFahrzeug.p_dGesamtStrecke;
     }
 
     // Getter für Gesamtstrecke
+    // Um die Gesamtstrecke in den Tests abzufragen
     double Fahrzeug::getGesamtStrecke() const{
 		return p_dGesamtStrecke;
 	}

@@ -40,14 +40,19 @@ class Fahrzeug {
 
 		Fahrzeug(std::string name, double maxGeschwindigkeit);//constructor mit name und maxGeschwindigkeit parameter
 
+		//Warum virtual? Damit der Destruktor der abgeleiteten Klassen
 		virtual ~Fahrzeug(); //destructor
 
 
-
+		// Statische Methode zur Ausgabe der Kopfzeile für Fahrzeugdaten
+		//Warum static? Weil die Tabellenüberschrift nicht zu einem konkreten Objekt gehört, sondern zur Klasse selbst.
 		static void vKopf(); //Kopfzeile ausgeben
 
 
 		// Ausgabe der Fahrzeugdaten auf einen Stream
+		// Virtuelle Methode, damit abgeleitete Klassen sie überschreiben können
+		// und ihre spezifischen Daten hinzufügen können
+		//ostream als Referenz übergeben, damit wir auf verschiedene Ausgabeströme schreiben können
 		virtual void vAusgeben(std::ostream& o) const;
 
 		// Simulation des Fahrzeugs für das aktuelle Zeitintervall
@@ -88,5 +93,8 @@ class Fahrzeug {
 
 
 };
-
+// Überladen des Ausgabeoperators für Fahrzeug
+// Warum außerhalb der Klasse? Weil es eine freie Funktion ist,
+// die nicht zu einem bestimmten Fahrzeugobjekt gehört.
+// ostrem ist nicht meine Klasse gehört, deshalb außerhalb der Klasse definiert
 std::ostream& operator<<(std::ostream& o, const Fahrzeug& x);
